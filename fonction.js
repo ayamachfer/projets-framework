@@ -6,7 +6,10 @@ function showPage(pageId) {
     });
     
     // Afficher la page sélectionnée
-    document.getElementById(pageId).classList.add('active');
+    const pageElement = document.getElementById(pageId);
+    if (pageElement) {
+        pageElement.classList.add('active');
+    }
     
     // Mettre à jour la navigation active
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -19,6 +22,23 @@ function showPage(pageId) {
             link.classList.add('active');
         }
     });
+    
+    // SI C'EST LA PAGE DE CONNEXION (page5)
+    if (pageId === 'page5') {
+        // Si l'utilisateur est DÉJÀ connecté, aller DIRECTEMENT à l'espace membre
+        if (currentUser) {
+            // Afficher page6 à la place
+            const page6Element = document.getElementById('page6');
+            if (page6Element) {
+                page6Element.classList.add('active');
+                loadMemberSpace();
+            }
+            return; // Ne pas afficher page5
+        } else {
+            // Utilisateur non connecté, afficher le formulaire de connexion
+            showLoginForm();
+        }
+    }
     
     // Scroll to top
     window.scrollTo(0, 0);
@@ -116,8 +136,12 @@ function initAuth() {
     // Charger l'utilisateur depuis le localStorage
     const savedUser = localStorage.getItem('espaceVertUser');
     if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateNavForUser();
+        try {
+            currentUser = JSON.parse(savedUser);
+            updateNavForUser();
+        } catch (e) {
+            console.error("Erreur de parsing du user:", e);
+        }
     }
     
     // Écouteurs pour les formulaires
@@ -132,23 +156,93 @@ function initAuth() {
     
     // Toggle visibilité des mots de passe
     document.getElementById('toggleLoginPassword')?.addEventListener('click', function() {
-        togglePasswordVisibility('loginPassword', this);
+        const input = document.getElementById('loginPassword');
+        const icon = this.querySelector('i');
+        if (input && icon) {
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     });
     
     document.getElementById('toggleRegisterPassword')?.addEventListener('click', function() {
-        togglePasswordVisibility('registerPassword', this);
+        const input = document.getElementById('registerPassword');
+        const icon = this.querySelector('i');
+        if (input && icon) {
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     });
+    
+    // Écouteurs pour basculer entre connexion et inscription
+    document.getElementById('showRegisterLink')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        const currentText = this.textContent;
+        if (currentText === 'Créez-en un ici') {
+            showRegisterForm();
+        } else {
+            showLoginForm();
+        }
+    });
+    
+    document.getElementById('backToLoginBtn')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        showLoginForm();
+    });
+}
+
+// Fonctions pour basculer entre connexion et inscription
+function showLoginForm() {
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    const showRegisterLink = document.getElementById('showRegisterLink');
+    
+    if (loginSection) loginSection.classList.remove('d-none');
+    if (registerSection) registerSection.classList.add('d-none');
+    if (showRegisterLink) showRegisterLink.textContent = 'Créez-en un ici';
+}
+
+function showRegisterForm() {
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    const showRegisterLink = document.getElementById('showRegisterLink');
+    
+    if (loginSection) loginSection.classList.add('d-none');
+    if (registerSection) registerSection.classList.remove('d-none');
+    if (showRegisterLink) showRegisterLink.textContent = 'Retour à la connexion';
 }
 
 // Connexion
 function handleLogin(e) {
     e.preventDefault();
     
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('loginEmail')?.value;
+    const password = document.getElementById('loginPassword')?.value;
     const alertDiv = document.getElementById('loginAlert');
     
-    // Simuler une vérification
+    if (!email || !password) {
+        if (alertDiv) {
+            alertDiv.textContent = 'Veuillez remplir tous les champs';
+            alertDiv.classList.remove('d-none', 'alert-success');
+            alertDiv.classList.add('alert-danger');
+        }
+        return;
+    }
+    
+    // Récupérer les utilisateurs
     const users = JSON.parse(localStorage.getItem('espaceVertUsers') || '[]');
     const user = users.find(u => u.email === email && u.password === password);
     
@@ -162,24 +256,34 @@ function handleLogin(e) {
             photos: user.photos || []
         };
         
+        // Sauvegarder dans localStorage
         localStorage.setItem('espaceVertUser', JSON.stringify(currentUser));
+        
+        // Mettre à jour la navigation
         updateNavForUser();
         
-        alertDiv.classList.add('d-none');
-        alertDiv.classList.remove('alert-success');
-        alertDiv.textContent = '';
+        // Cacher les alertes
+        if (alertDiv) {
+            alertDiv.classList.add('d-none');
+        }
         
         // Rediriger vers l'espace membre
         showPage('page6');
         
         // Afficher notification
-        showNotification(`Bienvenue ${user.firstName} ! Accès à votre espace membre.`, 'success');
+        showNotification(`Bienvenue ${user.firstName} !`, 'success');
+        
+        // Réinitialiser le formulaire
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) loginForm.reset();
+        
     } else {
         // Échec de connexion
-        alertDiv.textContent = 'Email ou mot de passe incorrect';
-        alertDiv.classList.remove('d-none');
-        alertDiv.classList.remove('alert-success');
-        alertDiv.classList.add('alert-danger');
+        if (alertDiv) {
+            alertDiv.textContent = 'Email ou mot de passe incorrect';
+            alertDiv.classList.remove('d-none', 'alert-success');
+            alertDiv.classList.add('alert-danger');
+        }
     }
 }
 
@@ -187,33 +291,42 @@ function handleLogin(e) {
 function handleRegister(e) {
     e.preventDefault();
     
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const firstName = document.getElementById('firstName')?.value;
+    const lastName = document.getElementById('lastName')?.value;
+    const email = document.getElementById('registerEmail')?.value;
+    const password = document.getElementById('registerPassword')?.value;
+    const confirmPassword = document.getElementById('confirmPassword')?.value;
     
     const alertDiv = document.getElementById('registerAlert');
     const successDiv = document.getElementById('registerSuccess');
     
     // Validation
     if (password !== confirmPassword) {
-        alertDiv.textContent = 'Les mots de passe ne correspondent pas';
-        alertDiv.classList.remove('d-none');
+        if (alertDiv) {
+            alertDiv.textContent = 'Les mots de passe ne correspondent pas';
+            alertDiv.classList.remove('d-none');
+            alertDiv.classList.add('alert-danger');
+        }
         return;
     }
     
     if (password.length < 8) {
-        alertDiv.textContent = 'Le mot de passe doit contenir au moins 8 caractères';
-        alertDiv.classList.remove('d-none');
+        if (alertDiv) {
+            alertDiv.textContent = 'Le mot de passe doit contenir au moins 8 caractères';
+            alertDiv.classList.remove('d-none');
+            alertDiv.classList.add('alert-danger');
+        }
         return;
     }
     
     // Vérifier si l'utilisateur existe déjà
     let users = JSON.parse(localStorage.getItem('espaceVertUsers') || '[]');
     if (users.find(u => u.email === email)) {
-        alertDiv.textContent = 'Un compte existe déjà avec cet email';
-        alertDiv.classList.remove('d-none');
+        if (alertDiv) {
+            alertDiv.textContent = 'Un compte existe déjà avec cet email';
+            alertDiv.classList.remove('d-none');
+            alertDiv.classList.add('alert-danger');
+        }
         return;
     }
     
@@ -231,17 +344,23 @@ function handleRegister(e) {
     localStorage.setItem('espaceVertUsers', JSON.stringify(users));
     
     // Afficher succès
-    alertDiv.classList.add('d-none');
-    successDiv.textContent = 'Compte créé avec succès ! Vous pouvez maintenant vous connecter.';
-    successDiv.classList.remove('d-none');
+    if (alertDiv) alertDiv.classList.add('d-none');
+    if (successDiv) {
+        successDiv.textContent = 'Compte créé avec succès ! Vous pouvez maintenant vous connecter.';
+        successDiv.classList.remove('d-none');
+        successDiv.classList.add('alert-success');
+    }
     
     // Réinitialiser le formulaire
-    document.getElementById('registerForm').reset();
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) registerForm.reset();
     
     // Basculer vers la connexion après 3 secondes
     setTimeout(() => {
-        successDiv.classList.add('d-none');
-        document.getElementById('loginEmail').value = email;
+        if (successDiv) successDiv.classList.add('d-none');
+        const loginEmail = document.getElementById('loginEmail');
+        if (loginEmail) loginEmail.value = email;
+        showLoginForm();
         showNotification('Compte créé avec succès !', 'success');
     }, 3000);
 }
@@ -255,61 +374,53 @@ function logout() {
     showNotification('Vous êtes déconnecté', 'info');
 }
 
-// Fonction pour aller à l'espace membre
-function goToMemberSpace() {
-    if (!currentUser) {
-        showNotification('Veuillez vous connecter pour accéder à votre espace', 'warning');
-        showPage('page5');
-        return;
-    }
-    showPage('page6');
-    loadMemberSpace();
-}
-
 // Mettre à jour la navigation selon l'état de connexion
 function updateNavForUser() {
     const navLinks = document.querySelector('#navbarNav .navbar-nav');
-    const loginLink = navLinks.querySelector('[onclick*="page5"]');
+    if (!navLinks) return;
+    
+    const loginLink = navLinks.querySelector('li:last-child');
+    if (!loginLink) return;
     
     if (currentUser) {
         // Utilisateur connecté
-        if (loginLink) {
-            loginLink.innerHTML = `
-                <div class="dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-1"></i> ${currentUser.firstName}
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="goToMemberSpace()">
-                                <i class="fas fa-home me-2"></i>Mon espace
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="showMyProfile()">
-                                <i class="fas fa-user me-2"></i>Mon profil
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="showMyPlants()">
-                                <i class="fas fa-leaf me-2"></i>Mes plantes
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="#" onclick="logout()">
-                                <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            `;
-        }
+        loginLink.innerHTML = `
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle me-1"></i> ${currentUser.firstName}
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="showPage('page6')">
+                            <i class="fas fa-home me-2"></i>Mon compte
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="showMyProfile()">
+                            <i class="fas fa-user me-2"></i>Mon profil
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="showMyPlants()">
+                            <i class="fas fa-leaf me-2"></i>Mes plantes
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        `;
     } else {
         // Utilisateur non connecté
-        if (loginLink) {
-            loginLink.innerHTML = '<a class="nav-link" onclick="showPage(\'page5\')"><i class="fas fa-user"></i> Connexion</a>';
-        }
+        loginLink.innerHTML = `
+            <a class="nav-link" onclick="showPage('page5')">
+                <i class="fas fa-user"></i> Connexion
+            </a>
+        `;
     }
 }
 
@@ -322,9 +433,13 @@ function loadMemberSpace() {
     }
     
     // Mettre à jour le nom
-    document.getElementById('userGreeting').textContent = currentUser.firstName;
-    document.getElementById('userFullName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
-    document.getElementById('userEmail').textContent = currentUser.email;
+    const userGreeting = document.getElementById('userGreeting');
+    const userFullName = document.getElementById('userFullName');
+    const userEmail = document.getElementById('userEmail');
+    
+    if (userGreeting) userGreeting.textContent = currentUser.firstName;
+    if (userFullName) userFullName.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+    if (userEmail) userEmail.textContent = currentUser.email;
     
     // Calculer les jours de membre
     const joinDate = new Date(currentUser.joinDate);
@@ -332,8 +447,10 @@ function loadMemberSpace() {
     const diffTime = Math.abs(today - joinDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    document.getElementById('memberDays').textContent = diffDays;
-    document.getElementById('memberSince').textContent = joinDate.toLocaleDateString('fr-FR', {
+    const memberDays = document.getElementById('memberDays');
+    const memberSince = document.getElementById('memberSince');
+    if (memberDays) memberDays.textContent = diffDays;
+    if (memberSince) memberSince.textContent = joinDate.toLocaleDateString('fr-FR', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -341,13 +458,17 @@ function loadMemberSpace() {
     
     // Mettre à jour les photos partagées
     const totalPhotos = currentUser.photos?.length || 0;
-    document.getElementById('totalSharedPhotos').textContent = `${totalPhotos} photo${totalPhotos > 1 ? 's' : ''}`;
+    const totalSharedPhotos = document.getElementById('totalSharedPhotos');
+    if (totalSharedPhotos) {
+        totalSharedPhotos.textContent = `${totalPhotos} photo${totalPhotos > 1 ? 's' : ''}`;
+    }
     
     // Déterminer le niveau
     let level = 'Débutant';
     if (totalPhotos >= 10) level = 'Expert';
     else if (totalPhotos >= 5) level = 'Intermédiaire';
-    document.getElementById('userLevel').textContent = level;
+    const userLevel = document.getElementById('userLevel');
+    if (userLevel) userLevel.textContent = level;
     
     // Charger les photos
     loadUserPhotos();
@@ -359,6 +480,7 @@ function loadMemberSpace() {
 // Charger les photos de l'utilisateur
 function loadUserPhotos() {
     const gallery = document.getElementById('userGallery');
+    if (!gallery) return;
     
     if (!currentUser.photos || currentUser.photos.length === 0) {
         gallery.innerHTML = `
@@ -398,9 +520,13 @@ function loadUserPhotos() {
 // Mettre à jour les statistiques
 function updateStats() {
     const totalPlants = currentUser.photos?.length || 0;
-    document.getElementById('totalPlants').textContent = totalPlants;
-    document.getElementById('totalPhotos').textContent = totalPlants;
-    document.getElementById('nextWatering').textContent = Math.min(3, totalPlants);
+    const totalPlantsEl = document.getElementById('totalPlants');
+    const totalPhotosEl = document.getElementById('totalPhotos');
+    const nextWateringEl = document.getElementById('nextWatering');
+    
+    if (totalPlantsEl) totalPlantsEl.textContent = totalPlants;
+    if (totalPhotosEl) totalPhotosEl.textContent = totalPlants;
+    if (nextWateringEl) nextWateringEl.textContent = Math.min(3, totalPlants);
 }
 
 // Ajouter une photo
@@ -411,11 +537,21 @@ function uploadUserPhoto() {
         return;
     }
     
+    const plantName = document.getElementById('plantName')?.value;
+    const plantType = document.getElementById('plantType')?.value;
+    const photoUrl = document.getElementById('photoUrl')?.value;
+    const plantDescription = document.getElementById('plantDescription')?.value;
+    
+    if (!plantName || !photoUrl) {
+        showNotification('Veuillez remplir au moins le nom et l\'URL de la photo', 'warning');
+        return;
+    }
+    
     const photoData = {
-        name: document.getElementById('plantName').value,
-        type: document.getElementById('plantType').value,
-        url: document.getElementById('photoUrl').value,
-        description: document.getElementById('plantDescription').value,
+        name: plantName,
+        type: plantType || 'Plante d\'intérieur',
+        url: photoUrl,
+        description: plantDescription || '',
         date: new Date().toISOString()
     };
     
@@ -431,11 +567,11 @@ function uploadUserPhoto() {
         localStorage.setItem('espaceVertUsers', JSON.stringify(users));
     }
     
-    // Mettre à jour l'utilisateur courant
     localStorage.setItem('espaceVertUser', JSON.stringify(currentUser));
     
     // Réinitialiser le formulaire
-    document.getElementById('uploadPhotoForm').reset();
+    const uploadForm = document.getElementById('uploadPhotoForm');
+    if (uploadForm) uploadForm.reset();
     
     // Recharger les photos et stats
     loadUserPhotos();
@@ -559,22 +695,29 @@ function showMyProfile() {
     `;
     
     // Ajouter le modal au body s'il n'existe pas
-    if (!document.getElementById('profileModal')) {
+    let modalElement = document.getElementById('profileModal');
+    if (!modalElement) {
         const modalDiv = document.createElement('div');
         modalDiv.innerHTML = modalHTML;
         document.body.appendChild(modalDiv);
+        modalElement = document.getElementById('profileModal');
     }
     
     // Afficher le modal
-    const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+    const modal = new bootstrap.Modal(modalElement);
     modal.show();
 }
 
 // Fonction pour mettre à jour le profil
 function updateProfile() {
-    const newFirstName = document.getElementById('updateFirstName').value;
-    const newLastName = document.getElementById('updateLastName').value;
-    const newEmail = document.getElementById('updateEmail').value;
+    const newFirstName = document.getElementById('updateFirstName')?.value;
+    const newLastName = document.getElementById('updateLastName')?.value;
+    const newEmail = document.getElementById('updateEmail')?.value;
+    
+    if (!newFirstName || !newLastName || !newEmail) {
+        showNotification('Veuillez remplir tous les champs', 'warning');
+        return;
+    }
     
     // Mettre à jour l'utilisateur courant
     currentUser.firstName = newFirstName;
@@ -599,7 +742,7 @@ function updateProfile() {
     
     // Fermer le modal
     const modal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
-    modal.hide();
+    if (modal) modal.hide();
     
     showNotification('Profil mis à jour avec succès !', 'success');
 }
@@ -617,7 +760,10 @@ function showMyPlants() {
     
     // Scroller vers la section des plantes
     setTimeout(() => {
-        document.getElementById('userGallery').scrollIntoView({ behavior: 'smooth' });
+        const gallery = document.getElementById('userGallery');
+        if (gallery) {
+            gallery.scrollIntoView({ behavior: 'smooth' });
+        }
         showNotification('Voici vos plantes !', 'info');
     }, 500);
 }
@@ -625,7 +771,9 @@ function showMyPlants() {
 // Fonctions utilitaires
 function togglePasswordVisibility(inputId, button) {
     const input = document.getElementById(inputId);
-    const icon = button.querySelector('i');
+    const icon = button?.querySelector('i');
+    
+    if (!input || !icon) return;
     
     if (input.type === 'password') {
         input.type = 'text';
@@ -639,22 +787,38 @@ function togglePasswordVisibility(inputId, button) {
 }
 
 function showForgotPassword() {
-    const modal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
-    modal.show();
+    const modalElement = document.getElementById('forgotPasswordModal');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    }
 }
 
 function requestPasswordReset() {
-    const email = document.getElementById('resetEmail').value;
+    const email = document.getElementById('resetEmail')?.value;
     const messageDiv = document.getElementById('resetMessage');
     
+    if (!email) {
+        if (messageDiv) {
+            messageDiv.textContent = 'Veuillez entrer votre email';
+            messageDiv.classList.remove('d-none', 'alert-success');
+            messageDiv.classList.add('alert-danger');
+        }
+        return;
+    }
+    
     // Simuler l'envoi d'email
-    messageDiv.textContent = `Un lien de réinitialisation a été envoyé à ${email}`;
-    messageDiv.classList.remove('d-none', 'alert-danger');
-    messageDiv.classList.add('alert-success');
+    if (messageDiv) {
+        messageDiv.textContent = `Un lien de réinitialisation a été envoyé à ${email}`;
+        messageDiv.classList.remove('d-none', 'alert-danger');
+        messageDiv.classList.add('alert-success');
+    }
     
     setTimeout(() => {
         const modal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
-        modal.hide();
+        if (modal) {
+            modal.hide();
+        }
         showNotification('Email de réinitialisation envoyé !', 'info');
     }, 2000);
 }
@@ -670,9 +834,15 @@ function showNotification(message, type = 'info') {
         min-width: 300px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     `;
+    
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'warning') icon = 'exclamation-triangle';
+    if (type === 'danger') icon = 'exclamation-circle';
+    
     notification.innerHTML = `
         <div class="d-flex align-items-center">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-3"></i>
+            <i class="fas fa-${icon} me-3"></i>
             <span>${message}</span>
         </div>
     `;
@@ -681,7 +851,9 @@ function showNotification(message, type = 'info') {
     
     // Supprimer après 5 secondes
     setTimeout(() => {
-        notification.remove();
+        if (notification.parentNode) {
+            notification.remove();
+        }
     }, 5000);
 }
 

@@ -269,3 +269,168 @@ footer {
 .photo-info {
     padding: 15px;
 }
+
+/* Styles pour les liens de bascule connexion/inscription */
+#showRegisterLink {
+    color: var(--primary-green) !important;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+#showRegisterLink:hover {
+    text-decoration: underline !important;
+    color: var(--light-green) !important;
+}
+
+/* Animation pour le changement de formulaire */
+#loginSection, #registerSection {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#backToLoginBtn {
+    transition: all 0.3s;
+}
+
+#backToLoginBtn:hover {
+    background-color: var(--light-green);
+    color: white;
+}
+
+/* Styles pour le dropdown utilisateur */
+.dropdown-menu {
+    background: white;
+    border: 1px solid var(--light-green);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-light);
+    color: var(--primary-green);
+    transform: translateX(5px);
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        position: static !important;
+        transform: none !important;
+        border: none;
+        box-shadow: none;
+    }
+}
+
+/* Correction pour les yeux de mot de passe */
+.input-group .btn-outline-secondary {
+    border-color: #ced4da;
+}
+
+.input-group .btn-outline-secondary:hover {
+    background-color: var(--light-green);
+    border-color: var(--light-green);
+    color: white;
+}
+
+/* Animation pour les changements */
+.page, #loginSection, #registerSection {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* AJOUT : Style pour le curseur pointer dans la navigation */
+.navbar-nav .nav-link,
+.navbar-brand,
+.dropdown-toggle {
+    cursor: pointer !important;
+}
+
+/* AJOUT : Style pour les liens cliquables */
+.nav-link:hover,
+.navbar-brand:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s;
+}
+
+/* AJOUT : Style pour le dropdown */
+.dropdown-item {
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-light);
+    color: var(--primary-green);
+}
+
+/* AJOUT : Style pour les boutons */
+.btn, button {
+    cursor: pointer;
+}
+
+/* AJOUT : Style pour les photos dans la galerie */
+.user-photo-item,
+.gallery-item {
+    cursor: pointer;
+}
+
+/* AJOUT : Style pour le bouton delete photo */
+.delete-photo {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.delete-photo:hover {
+    transform: scale(1.1);
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+/* AJOUT : Style pour le menu déroulant actif */
+.nav-link.active {
+    font-weight: bold;
+    position: relative;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    border-radius: 2px;
+}
+
+/* AJOUT : Animation au survol améliorée */
+.nav-link, .navbar-brand, .dropdown-toggle {
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover, .navbar-brand:hover, .dropdown-toggle:hover {
+    opacity: 0.9;
+}
+
+/* AJOUT : Style pour les cartes cliquables */
+.card {
+    cursor: pointer;
+}
+
+/* AJOUT : Style pour les formulaires */
+.form-control:focus {
+    border-color: var(--light-green);
+    box-shadow: 0 0 0 0.25rem rgba(107, 153, 72, 0.25);
+}
+
+/* AJOUT : Style pour les onglets actifs dans la connexion */
+.btn.active {
+    background-color: var(--primary-green) !important;
+    border-color: var(--primary-green) !important;
+    color: white !important;
+}
