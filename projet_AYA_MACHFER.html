@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESPRIT VERT - Votre Guide des Plantes</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="sty.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showPage('page1')">🌿 ESPRIT VERT</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" onclick="showPage('page1')">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="showPage('page2')">Types de Plantes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="showPage('page3')">Entretien</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="showPage('page4')">Décoration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="showPage('page5')">
+                            <i class="fas fa-user"></i> Connexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page 1: Introduction aux Plantes -->
+    <div id="page1" class="page active">
+        <div class="hero-section">
+            <div class="container text-center">
+                <h1 class="display-3 fw-bold animate__animated animate__fadeInDown" style="color: var(--primary-green);">
+                    Bienvenue dans le Monde des Plantes
+                </h1>
+                <p class="lead animate__animated animate__fadeInUp mt-4" style="color: var(--light-green);">
+                    Découvrez la beauté et les bienfaits du règne végétal
+                </p>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-4 text-center animate__animated animate__fadeInLeft">
+                    <div class="plant-icon">🌱</div>
+                    <h3>Purification d'Air</h3>
+                    <p>Les plantes absorbent le CO2 et libèrent de l'oxygène, améliorant la qualité de l'air intérieur.</p>
+                </div>
+                <div class="col-md-4 text-center animate__animated animate__fadeInUp">
+                    <div class="plant-icon">💚</div>
+                    <h3>Bien-être Mental</h3>
+                    <p>La présence de plantes réduit le stress et améliore l'humeur et la concentration.</p>
+                </div>
+                <div class="col-md-4 text-center animate__animated animate__fadeInRight">
+                    <div class="plant-icon">🏡</div>
+                    <h3>Décoration Naturelle</h3>
+                    <p>Les plantes ajoutent une touche de verdure et d'élégance à votre intérieur.</p>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <img src="img/plt.jpg" 
+                         class="img-fluid rounded shadow animate__animated animate__fadeInLeft" alt="Plantes vertes">
+                </div>
+                <div class="col-md-6 d-flex align-items-center animate__animated animate__fadeInRight">
+                    <div>
+                        <h2 class="section-title">L'Importance des Plantes</h2>
+                        <p>Les plantes jouent un rôle essentiel dans notre environnement. Elles produisent l'oxygène que nous respirons, régulent le climat, et constituent la base de la chaîne alimentaire. Dans nos maisons, elles créent un lien avec la nature et apportent de nombreux bienfaits pour notre santé physique et mentale.</p>
+                        <p>Intégrer des plantes dans votre quotidien, c'est adopter un mode de vie plus sain et plus durable.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: Types de Plantes -->
+    <div id="page2" class="page">
+        <div class="container" style="margin-top: 80px;">
+            <h1 class="text-center section-title">Types de Plantes et Leurs Bienfaits</h1>
+            
+            <div class="row mt-5">
+                <div class="col-md-4 animate__animated animate__fadeInUp">
+                    <div class="card">
+                        <img src="img/aloe_vera.jpg" 
+                             class="card-img-top" alt="Aloe Vera">
+                        <div class="card-body">
+                            <h5 class="card-title">Aloe Vera</h5>
+                            <p class="card-text">Plante succulente aux multiples vertus médicinales. Excellent pour soigner les brûlures et purifier l'air.</p>
+                            <ul class="list-unstyled">
+                                <li>✓ Propriétés cicatrisantes</li>
+                                <li>✓ Hydratation de la peau</li>
+                                <li>✓ Facile d'entretien</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                    <div class="card">
+                        <img src="img/Monstera Deliciosa.jpg" 
+                             class="card-img-top" alt="Monstera">
+                        <div class="card-body">
+                            <h5 class="card-title">Monstera Deliciosa</h5>
+                            <p class="card-text">Plante tropicale très décorative avec ses grandes feuilles percées. Parfaite pour les grands espaces.</p>
+                            <ul class="list-unstyled">
+                                <li>✓ Purifie l'air efficacement</li>
+                                <li>✓ Croissance rapide</li>
+                                <li>✓ Très décorative</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                    <div class="card">
+                        <img src="img/lavandee.jpg" 
+                             class="card-img-top" alt="Lavande">
+                        <div class="card-body">
+                            <h5 class="card-title">Lavande</h5>
+                            <p class="card-text">Plante aromatique aux propriétés apaisantes. Son parfum favorise la relaxation et le sommeil.</p>
+                            <ul class="list-unstyled">
+                                <li>✓ Effet calmant</li>
+                                <li>✓ Parfum agréable</li>
+                                <li>✓ Repousse les insectes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+                    <div class="card">
+                        <img src="img/pothos.jpg" 
+                             class="card-img-top" alt="Pothos">
+                        <div class="card-body">
+                            <h5 class="card-title">Pothos</h5>
+                            <p class="card-text">Plante grimpante très résistante, idéale pour les débutants. Excellent purificateur d'air.</p>
+                            <ul class="list-unstyled">
+                                <li>✓ Très résistante</li>
+                                <li>✓ Pousse dans l'ombre</li>
+                                <li>✓ Facile à multiplier</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.8s;">
+                    <div class="card">
+                        <img src="img/basilic.jpg" 
+                             class="card-img-top" alt="Basilic">
+                        <div class="card-body">
+                            <h5 class="card-title">Basilic</h5>
+                            <p class="card-text">Herbe aromatique culinaire aux propriétés antioxydantes. Parfait pour la cuisine et la santé.</p>
+                            <ul class="list-unstyled">
+                                <li>✓ Usage culinaire</li>
+                                <li>✓ Propriétés digestives</li>
+                                <li>✓ Pousse rapidement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 1s;">
+                    <div class="card">
+                        <img src="img/Fougère.jpg" 
+                             class="card-img-top" alt="Fougère">
+                        <div class="card-body">
+                            <h5 class="card-title">Fougère</h5>
+                            <p class="card-text">Plante d'intérieur qui humidifie l'air naturellement. Idéale pour les salles de bain.</p>
+                            <ul class="list-unstyled">
+                                <li>✓ Humidifie l'air</li>
+                                <li>✓ Aime l'humidité</li>
+                                <li>✓ Aspect luxuriant</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Méthodes de Contrôle -->
+    <div id="page3" class="page">
+        <div class="container" style="margin-top: 80px;">
+            <h1 class="text-center section-title">Guide d'Entretien des Plantes</h1>
+            
+            <div class="row mt-5">
+                <div class="col-md-6 animate__animated animate__fadeInLeft">
+                    <div class="control-method">
+                        <h3>💧 Arrosage</h3>
+                        <p><strong>Fréquence:</strong> Varie selon la plante. Généralement 1-2 fois par semaine.</p>
+                        <p><strong>Technique:</strong> Arrosez le matin, vérifiez que le sol soit sec entre deux arrosages. Évitez l'eau stagnante.</p>
+                        <p><strong>Astuce:</strong> Utilisez de l'eau à température ambiante pour ne pas choquer les racines.</p>
+                    </div>
+
+                    <div class="control-method">
+                        <h3>☀️ Luminosité</h3>
+                        <p><strong>Exposition:</strong> Adaptez selon les besoins de chaque plante (plein soleil, mi-ombre, ombre).</p>
+                        <p><strong>Attention:</strong> Une exposition incorrecte cause le jaunissement ou la chute des feuilles.</p>
+                        <p><strong>Conseil:</strong> Tournez vos plantes régulièrement pour une croissance uniforme.</p>
+                    </div>
+
+                    <div class="control-method">
+                        <h3>🌡️ Température</h3>
+                        <p><strong>Idéal:</strong> Entre 18-24°C pour la plupart des plantes d'intérieur.</p>
+                        <p><strong>À éviter:</strong> Les courants d'air froid et les sources de chaleur directes.</p>
+                        <p><strong>Hiver:</strong> Réduisez l'arrosage et protégez du froid.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 animate__animated animate__fadeInRight">
+                    <div class="control-method">
+                        <h3>🌱 Fertilisation</h3>
+                        <p><strong>Période:</strong> Printemps et été (période de croissance active).</p>
+                        <p><strong>Fréquence:</strong> Tous les 15 jours à 1 mois selon l'engrais.</p>
+                        <p><strong>Type:</strong> Utilisez un engrais adapté (liquide, granulés, naturel).</p>
+                    </div>
+
+                    <div class="control-method">
+                        <h3>✂️ Taille et Nettoyage</h3>
+                        <p><strong>Taille:</strong> Retirez les feuilles mortes ou abîmées régulièrement.</p>
+                        <p><strong>Nettoyage:</strong> Dépoussiérez les feuilles avec un chiffon humide pour faciliter la photosynthèse.</p>
+                        <p><strong>Rempotage:</strong> Changez de pot tous les 2-3 ans ou quand les racines sortent.</p>
+                    </div>
+
+                    <div class="control-method">
+                        <h3>🐛 Protection</h3>
+                        <p><strong>Prévention:</strong> Inspectez régulièrement pour détecter parasites ou maladies.</p>
+                        <p><strong>Traitement naturel:</strong> Savon noir, huile de neem, ou solution d'ail.</p>
+                        <p><strong>Isolation:</strong> Séparez les plantes malades pour éviter la contamination.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <img src="img/soin.jpg" 
+                         class="img-fluid rounded shadow mb-4" 
+                         alt="Outils d'entretien des plantes"
+                         style="max-height: 400px;">
+                    <div class="bg-light p-4 rounded">
+                        <h4 style="color: var(--primary-green);">💡 Conseil Expert</h4>
+                        <p class="mb-0">Observez vos plantes régulièrement ! Elles communiquent leurs besoins : feuilles jaunes (trop d'eau), feuilles tombantes (manque d'eau), croissance lente (manque de lumière).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Décoration -->
+    <div id="page4" class="page">
+        <div class="container" style="margin-top: 80px;">
+            <h1 class="text-center section-title">Décoration Végétale pour la Maison</h1>
+            <p class="text-center lead mb-5">Transformez votre intérieur avec des plantes décoratives</p>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="gallery-item animate__animated animate__zoomIn">
+                        <img src="img/salon.jpg" 
+                             alt="Salon avec plantes">
+                        <div class="gallery-overlay">
+                            <h5>Salon</h5>
+                            <p>Grandes plantes pour créer un point focal</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="gallery-item animate__animated animate__zoomIn" style="animation-delay: 0.2s;">
+                        <img src="img/cuisine.jpg" 
+                             alt="Cuisine avec herbes">
+                        <div class="gallery-overlay">
+                            <h5>Cuisine</h5>
+                            <p>Herbes fraîches </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="gallery-item animate__animated animate__zoomIn" style="animation-delay: 0.4s;">
+                        <img src="img/balcon.jpg" 
+                             alt="Chambre zen">
+                        <div class="gallery-overlay">
+                            <h5>Balcon</h5>
+                            <p>Plantes rendre le vue adorable</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="gallery-item animate__animated animate__zoomIn" style="animation-delay: 0.6s;">
+                        <img src="img/bain.jpg" 
+                             alt="Salle de bain">
+                        <div class="gallery-overlay">
+                            <h5>Salle de Bain</h5>
+                            <p>Plantes qui aiment l'humidité</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="gallery-item animate__animated animate__zoomIn" style="animation-delay: 0.8s;">
+                        <img src="img/bureau.jpg" 
+                             alt="Bureau">
+                        <div class="gallery-overlay">
+                            <h5>Bureau Productif</h5>
+                            <p>Plantes qui améliorent la concentration</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="gallery-item animate__animated animate__zoomIn" style="animation-delay: 1s;">
+                        <img src="img/mur.jpg" 
+                             alt="Mur végétal">
+                        <div class="gallery-overlay">
+                            <h5>Mur Végétal</h5>
+                            <p>Touche artistique et naturelle</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5 bg-light p-5 rounded">
+                <div class="col-md-12">
+                    <h3 class="text-center mb-4" style="color: var(--primary-green);">Conseils de Décoration</h3>
+                </div>
+                <div class="col-md-6">
+                    <h5>🎨 Harmonisation des Couleurs</h5>
+                    <p>Choisissez des pots qui s'harmonisent avec votre décoration. Les tons neutres (blanc, gris, beige) sont polyvalents et mettent en valeur le vert des plantes.</p>
+                    
+                    <h5 class="mt-4">📐 Jouer avec les Hauteurs</h5>
+                    <p>Variez les hauteurs en utilisant des supports, étagères ou suspensions. Créez des compositions dynamiques en mélangeant plantes hautes et retombantes.</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>🌿 Groupement Stratégique</h5>
+                    <p>Regroupez les plantes par besoins similaires (lumière, arrosage). Cela facilite l'entretien et crée des mini-écosystèmes.</p>
+                    
+                    <h5 class="mt-4">✨ Points Focaux</h5>
+                    <p>Utilisez une grande plante comme élément central d'une pièce. Les Monstera, Ficus ou Palmiers sont parfaits pour cela.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 5: Connexion/Inscription -->
+    <div id="page5" class="page">
+        <div class="container" style="margin-top: 80px;">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="row">
+                        <!-- Formulaire de Connexion -->
+                        <div class="col-md-6">
+                            <div class="card shadow">
+                                <div class="card-body p-5">
+                                    <h3 class="text-center mb-4" style="color: var(--primary-green);">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Connexion
+                                    </h3>
+                                    
+                                    <div id="loginAlert" class="alert alert-danger d-none"></div>
+                                    
+                                    <form id="loginForm">
+                                        <div class="mb-3">
+                                            <label for="loginEmail" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="loginEmail" 
+                                                   placeholder="votre@email.com" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="loginPassword" class="form-label">Mot de passe</label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" id="loginPassword" 
+                                                       placeholder="Votre mot de passe" required>
+                                                <button class="btn btn-outline-secondary" type="button" 
+                                                        id="toggleLoginPassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                                            <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                                        </button>
+                                        
+                                        <div class="text-center">
+                                            <a href="#" class="text-decoration-none" onclick="showForgotPassword()">
+                                                Mot de passe oublié ?
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Formulaire d'Inscription -->
+                        <div class="col-md-6">
+                            <div class="card shadow">
+                                <div class="card-body p-5">
+                                    <h3 class="text-center mb-4" style="color: var(--primary-green);">
+                                        <i class="fas fa-user-plus me-2"></i>Inscription
+                                    </h3>
+                                    
+                                    <div id="registerAlert" class="alert alert-danger d-none"></div>
+                                    <div id="registerSuccess" class="alert alert-success d-none"></div>
+                                    
+                                    <form id="registerForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="firstName" class="form-label">Prénom</label>
+                                                <input type="text" class="form-control" id="firstName" 
+                                                       placeholder="Votre prénom" required>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="lastName" class="form-label">Nom</label>
+                                                <input type="text" class="form-control" id="lastName" 
+                                                       placeholder="Votre nom" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="registerEmail" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="registerEmail" 
+                                                   placeholder="votre@email.com" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="registerPassword" class="form-label">Mot de passe</label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" id="registerPassword" 
+                                                       placeholder="Min. 8 caractères" minlength="8" required>
+                                                <button class="btn btn-outline-secondary" type="button" 
+                                                        id="toggleRegisterPassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Doit contenir au moins 8 caractères</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+                                            <input type="password" class="form-control" id="confirmPassword" 
+                                                   placeholder="Retapez votre mot de passe" required>
+                                        </div>
+                                        
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="acceptTerms" required>
+                                            <label class="form-check-label" for="acceptTerms">
+                                                J'accepte les <a href="#" class="text-decoration-none" 
+                                                onclick="showTerms()">conditions d'utilisation</a>
+                                            </label>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="fas fa-user-plus me-2"></i>S'inscrire
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section des avantages pour les membres -->
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h4 class="text-center mb-4" style="color: var(--primary-green);">
+                                        <i class="fas fa-crown me-2"></i>Avantages des membres
+                                    </h4>
+                                    <div class="row text-center">
+                                        <div class="col-md-3 mb-3">
+                                            <div class="plant-icon">📝</div>
+                                            <h6>Journal de plantes</h6>
+                                            <p>Suivez l'entretien de vos plantes</p>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="plant-icon">🔔</div>
+                                            <h6>Rappels</h6>
+                                            <p>Alertes d'arrosage personnalisées</p>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="plant-icon">👥</div>
+                                            <h6>Communauté</h6>
+                                            <p>Échangez avec d'autres passionnés</p>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="plant-icon">🎁</div>
+                                            <h6>Contenu exclusif</h6>
+                                            <p>Guides et conseils avancés</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 6: Espace Membre -->
+    <div id="page6" class="page">
+        <div class="container" style="margin-top: 80px;">
+            <!-- Contenu de l'espace membre -->
+            <div id="memberContent">
+                <h1 class="text-center section-title">🌿 Mon espace plantes</h1>
+                <p class="text-center lead mb-5">Bienvenue <span id="userGreeting"></span> ! Gérez votre collection de plantes.</p>
+                
+                <!-- Informations personnelles -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-user me-2"></i>Mon compte</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 text-center">
+                                        <div class="profile-icon mb-3">
+                                            <i class="fas fa-user-circle fa-5x text-success"></i>
+                                        </div>
+                                        <button class="btn btn-outline-success btn-sm" onclick="showMyProfile()">
+                                            <i class="fas fa-edit me-1"></i>Modifier le profil
+                                        </button>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <h4 id="userFullName"></h4>
+                                        <p class="text-muted">
+                                            <i class="fas fa-envelope me-2"></i><span id="userEmail"></span>
+                                        </p>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-md-4">
+                                                <div class="info-card p-3 bg-light rounded">
+                                                    <h6><i class="fas fa-calendar-alt me-2"></i>Membre depuis</h6>
+                                                    <p id="memberSince"></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="info-card p-3 bg-light rounded">
+                                                    <h6><i class="fas fa-camera me-2"></i>Photos partagées</h6>
+                                                    <p id="totalSharedPhotos"></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="info-card p-3 bg-light rounded">
+                                                    <h6><i class="fas fa-star me-2"></i>Niveau</h6>
+                                                    <p id="userLevel">Débutant</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistiques -->
+                <div class="row mb-5">
+                    <div class="col-md-3 text-center">
+                        <div class="stat-card p-4 rounded shadow-sm">
+                            <div class="plant-icon">🌱</div>
+                            <h3 id="totalPlants">0</h3>
+                            <p>Plantes totales</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="stat-card p-4 rounded shadow-sm">
+                            <div class="plant-icon">💧</div>
+                            <h3 id="nextWatering">0</h3>
+                            <p>À arroser</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="stat-card p-4 rounded shadow-sm">
+                            <div class="plant-icon">📸</div>
+                            <h3 id="totalPhotos">0</h3>
+                            <p>Photos</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="stat-card p-4 rounded shadow-sm">
+                            <div class="plant-icon">⭐</div>
+                            <h3 id="memberDays">1</h3>
+                            <p>Jour(s) membre</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery des plantes de l'utilisateur -->
+                <h3 class="mb-4">📸 Mes plantes</h3>
+                <div class="row mb-5" id="userGallery">
+                    <!-- Les photos de l'utilisateur s'afficheront ici -->
+                    <div class="col-12 text-center">
+                        <p class="text-muted">Ajoutez votre première photo !</p>
+                    </div>
+                </div>
+                
+                <!-- Formulaire pour ajouter une photo -->
+                <div class="card mb-5">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-camera me-2"></i>Ajouter une nouvelle photo</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="uploadPhotoForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="plantName" class="form-label">Nom de la plante</label>
+                                    <input type="text" class="form-control" id="plantName" 
+                                           placeholder="Ex: Mon Monstera Deliciosa" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="plantType" class="form-label">Type de plante</label>
+                                    <select class="form-control" id="plantType">
+                                        <option>Plante d'intérieur</option>
+                                        <option>Plante d'extérieur</option>
+                                        <option>Plante succulente</option>
+                                        <option>Plante aromatique</option>
+                                        <option>Fleur</option>
+                                        <option>Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="photoUrl" class="form-label">URL de l'image</label>
+                                    <input type="text" class="form-control" id="photoUrl" 
+                                           placeholder="https://exemple.com/ma-photo.jpg" required>
+                                    <small class="text-muted">Vous pouvez aussi utiliser <a href="https://imgbb.com/" target="_blank">imgbb.com</a> pour héberger vos images</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="plantDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="plantDescription" 
+                                              rows="2" placeholder="Notes sur cette plante..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>Ajouter la photo
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+               
+                <!-- Conseils personnalisés -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h4><i class="fas fa-lightbulb me-2"></i>Conseils Personnalisés</h4>
+                                <p>En tant que membre, vous recevez des conseils adaptés à votre collection :</p>
+                                <ul>
+                                    <li>💧 Rappels d'arrosage personnalisés</li>
+                                    <li>🌱 Suggestions de plantes compatibles</li>
+                                    <li>📅 Calendrier de soins saisonniers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour mot de passe oublié -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mot de passe oublié</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Entrez votre email pour recevoir un lien de réinitialisation :</p>
+                    <input type="email" class="form-control" id="resetEmail" placeholder="votre@email.com">
+                    <div id="resetMessage" class="alert d-none mt-3"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" onclick="requestPasswordReset()">Envoyer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">© 2025 ESPRIT VERT - Cultivez votre passion pour les plantes 🌿</p>
+            <p class="mt-2">Contact: espritvert@gmail.com</p>
+        </div>
+    </footer>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="fonction.js"></script>
+</body>
+</html>
+    
