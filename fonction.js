@@ -69,11 +69,17 @@ function getPageName(pageId) {
 function createLeaf() {
     const leaf = document.createElement('div');
     leaf.classList.add('leaf-animation');
-    leaf.innerHTML = '🍃';
+    
+    // Utiliser un simple point vert
+    leaf.textContent = '●';
     leaf.style.left = Math.random() * 100 + '%';
     leaf.style.animationDuration = (Math.random() * 5 + 5) + 's';
-    leaf.style.fontSize = (Math.random() * 20 + 15) + 'px';
+    leaf.style.fontSize = (Math.random() * 15 + 10) + 'px';
+    leaf.style.color = '#6b9948';
     leaf.style.opacity = Math.random() * 0.3 + 0.1;
+    leaf.style.zIndex = '9999';
+    leaf.style.pointerEvents = 'none';
+    
     document.body.appendChild(leaf);
     
     // Supprimer la feuille après l'animation
@@ -238,7 +244,7 @@ function showRegisterForm() {
     if (showRegisterLink) showRegisterLink.textContent = 'Retour à la connexion';
 }
 
-// Connexion
+// Connexion - VERSION SIMPLIFIÉE ET CORRIGÉE
 function handleLogin(e) {
     e.preventDefault();
     
@@ -256,10 +262,25 @@ function handleLogin(e) {
     }
     
     // Récupérer les utilisateurs
-    const users = JSON.parse(localStorage.getItem('espaceVertUsers') || '[]');
-    const user = users.find(u => u.email === email && u.password === password);
+    let users = [];
+    try {
+        const usersJSON = localStorage.getItem('espaceVertUsers');
+        users = usersJSON ? JSON.parse(usersJSON) : [];
+    } catch (error) {
+        users = [];
+    }
     
-    if (user) {
+    // Chercher l'utilisateur - CORRECTION : vérifier l'email d'abord
+    let user = null;
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].email === email) {
+            user = users[i];
+            break;
+        }
+    }
+    
+    // Vérifier le mot de passe seulement si l'utilisateur existe
+    if (user && user.password === password) {
         // Connexion réussie
         currentUser = {
             firstName: user.firstName,
@@ -301,7 +322,7 @@ function handleLogin(e) {
     }
 }
 
-// Inscription
+// Inscription - VERSION CORRIGÉE
 function handleRegister(e) {
     e.preventDefault();
     
@@ -334,8 +355,24 @@ function handleRegister(e) {
     }
     
     // Vérifier si l'utilisateur existe déjà
-    let users = JSON.parse(localStorage.getItem('espaceVertUsers') || '[]');
-    if (users.find(u => u.email === email)) {
+    let users = [];
+    try {
+        const usersJSON = localStorage.getItem('espaceVertUsers');
+        users = usersJSON ? JSON.parse(usersJSON) : [];
+    } catch (error) {
+        users = [];
+    }
+    
+    // Vérifier si l'email existe déjà
+    let userExists = false;
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].email === email) {
+            userExists = true;
+            break;
+        }
+    }
+    
+    if (userExists) {
         if (alertDiv) {
             alertDiv.textContent = 'Un compte existe déjà avec cet email';
             alertDiv.classList.remove('d-none');
@@ -346,17 +383,30 @@ function handleRegister(e) {
     
     // Créer le nouvel utilisateur
     const newUser = {
-        firstName,
-        lastName,
-        email,
-        password,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
         joinDate: new Date().toISOString(),
         photos: [],
         profileImage: null
     };
     
+    // Ajouter à la liste
     users.push(newUser);
-    localStorage.setItem('espaceVertUsers', JSON.stringify(users));
+    
+    // Sauvegarder dans localStorage
+    try {
+        localStorage.setItem('espaceVertUsers', JSON.stringify(users));
+    } catch (error) {
+        console.error("Erreur lors de la sauvegarde:", error);
+        if (alertDiv) {
+            alertDiv.textContent = 'Erreur lors de la création du compte';
+            alertDiv.classList.remove('d-none');
+            alertDiv.classList.add('alert-danger');
+        }
+        return;
+    }
     
     // Afficher succès
     if (alertDiv) alertDiv.classList.add('d-none');
