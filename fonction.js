@@ -109,6 +109,8 @@ function triggerScrollAnimations() {
 
 // Gestion de la connexion/inscription
 let currentUser = null;
+let currentProfileImage = null;
+let currentImageData = null;
 
 // Initialisation quand la page est chargée
 document.addEventListener('DOMContentLoaded', function() {
@@ -129,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialiser l'authentification
     initAuth();
+    initImageUpload();
 });
 
 // Initialisation des événements de connexion/inscription
@@ -138,6 +141,8 @@ function initAuth() {
     if (savedUser) {
         try {
             currentUser = JSON.parse(savedUser);
+            // Charger la photo de profil
+            currentProfileImage = currentUser.profileImage || null;
             updateNavForUser();
         } catch (e) {
             console.error("Erreur de parsing du user:", e);
@@ -204,6 +209,14 @@ function initAuth() {
     });
 }
 
+// Initialiser l'upload d'images
+function initImageUpload() {
+    const photoInput = document.getElementById('photoInput');
+    if (photoInput) {
+        photoInput.addEventListener('change', handleImageSelect);
+    }
+}
+
 // Fonctions pour basculer entre connexion et inscription
 function showLoginForm() {
     const loginSection = document.getElementById('loginSection');
@@ -253,7 +266,8 @@ function handleLogin(e) {
             lastName: user.lastName,
             email: user.email,
             joinDate: user.joinDate || new Date().toISOString(),
-            photos: user.photos || []
+            photos: user.photos || [],
+            profileImage: user.profileImage || null
         };
         
         // Sauvegarder dans localStorage
@@ -337,7 +351,8 @@ function handleRegister(e) {
         email,
         password,
         joinDate: new Date().toISOString(),
-        photos: []
+        photos: [],
+        profileImage: null
     };
     
     users.push(newUser);
@@ -382,12 +397,20 @@ function updateNavForUser() {
     const loginLink = navLinks.querySelector('li:last-child');
     if (!loginLink) return;
     
+    // Vérifier si l'utilisateur a une photo de profil
+    const profilePhoto = currentUser?.profileImage ? 
+        `<img src="${currentUser.profileImage}" alt="Photo profil" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">` :
+        `<i class="fas fa-user-circle me-2"></i>`;
+    
     if (currentUser) {
         // Utilisateur connecté
         loginLink.innerHTML = `
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    <i class="fas fa-user-circle me-1"></i> ${currentUser.firstName}
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                    <span class="profile-photo-nav me-2">
+                        ${profilePhoto}
+                    </span>
+                    ${currentUser.firstName}
                 </a>
                 <ul class="dropdown-menu">
                     <li>
@@ -424,180 +447,75 @@ function updateNavForUser() {
     }
 }
 
-// Charger l'espace membre
-function loadMemberSpace() {
-    if (!currentUser) {
-        showNotification('Veuillez vous connecter pour accéder à cette page', 'warning');
-        showPage('page5');
-        return;
-    }
+// Fonction pour changer la photo de profil
+function changeProfilePhoto() {
+    // Créer un input file caché
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
     
-    // Mettre à jour le nom
-    const userGreeting = document.getElementById('userGreeting');
-    const userFullName = document.getElementById('userFullName');
-    const userEmail = document.getElementById('userEmail');
-    
-    if (userGreeting) userGreeting.textContent = currentUser.firstName;
-    if (userFullName) userFullName.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
-    if (userEmail) userEmail.textContent = currentUser.email;
-    
-    // Calculer les jours de membre
-    const joinDate = new Date(currentUser.joinDate);
-    const today = new Date();
-    const diffTime = Math.abs(today - joinDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    const memberDays = document.getElementById('memberDays');
-    const memberSince = document.getElementById('memberSince');
-    if (memberDays) memberDays.textContent = diffDays;
-    if (memberSince) memberSince.textContent = joinDate.toLocaleDateString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-    
-    // Mettre à jour les photos partagées
-    const totalPhotos = currentUser.photos?.length || 0;
-    const totalSharedPhotos = document.getElementById('totalSharedPhotos');
-    if (totalSharedPhotos) {
-        totalSharedPhotos.textContent = `${totalPhotos} photo${totalPhotos > 1 ? 's' : ''}`;
-    }
-    
-    // Déterminer le niveau
-    let level = 'Débutant';
-    if (totalPhotos >= 10) level = 'Expert';
-    else if (totalPhotos >= 5) level = 'Intermédiaire';
-    const userLevel = document.getElementById('userLevel');
-    if (userLevel) userLevel.textContent = level;
-    
-    // Charger les photos
-    loadUserPhotos();
-    
-    // Mettre à jour les statistiques
-    updateStats();
-}
-
-// Charger les photos de l'utilisateur
-function loadUserPhotos() {
-    const gallery = document.getElementById('userGallery');
-    if (!gallery) return;
-    
-    if (!currentUser.photos || currentUser.photos.length === 0) {
-        gallery.innerHTML = `
-            <div class="col-12 text-center">
-                <div class="p-5 bg-light rounded">
-                    <i class="fas fa-camera fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">Aucune photo ajoutée</p>
-                    <p>Commencez par ajouter une photo de votre plante !</p>
-                </div>
-            </div>
-        `;
-        return;
-    }
-    
-    gallery.innerHTML = '';
-    currentUser.photos.forEach((photo, index) => {
-        const col = document.createElement('div');
-        col.className = 'col-md-4 col-sm-6 mb-4';
-        col.innerHTML = `
-            <div class="user-photo-item">
-                <img src="${photo.url}" alt="${photo.name}" 
-                     onerror="this.src='https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop'">
-                <button class="delete-photo" onclick="deletePhoto(${index})">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="photo-info">
-                    <h6>${photo.name}</h6>
-                    <p class="text-muted small">${photo.type} • ${new Date(photo.date).toLocaleDateString()}</p>
-                    <p class="small">${photo.description || 'Pas de description'}</p>
-                </div>
-            </div>
-        `;
-        gallery.appendChild(col);
-    });
-}
-
-// Mettre à jour les statistiques
-function updateStats() {
-    const totalPlants = currentUser.photos?.length || 0;
-    const totalPlantsEl = document.getElementById('totalPlants');
-    const totalPhotosEl = document.getElementById('totalPhotos');
-    const nextWateringEl = document.getElementById('nextWatering');
-    
-    if (totalPlantsEl) totalPlantsEl.textContent = totalPlants;
-    if (totalPhotosEl) totalPhotosEl.textContent = totalPlants;
-    if (nextWateringEl) nextWateringEl.textContent = Math.min(3, totalPlants);
-}
-
-// Ajouter une photo
-function uploadUserPhoto() {
-    if (!currentUser) {
-        showNotification('Veuillez vous connecter d\'abord', 'warning');
-        showPage('page5');
-        return;
-    }
-    
-    const plantName = document.getElementById('plantName')?.value;
-    const plantType = document.getElementById('plantType')?.value;
-    const photoUrl = document.getElementById('photoUrl')?.value;
-    const plantDescription = document.getElementById('plantDescription')?.value;
-    
-    if (!plantName || !photoUrl) {
-        showNotification('Veuillez remplir au moins le nom et l\'URL de la photo', 'warning');
-        return;
-    }
-    
-    const photoData = {
-        name: plantName,
-        type: plantType || 'Plante d\'intérieur',
-        url: photoUrl,
-        description: plantDescription || '',
-        date: new Date().toISOString()
+    fileInput.onchange = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        if (!file.type.match('image.*')) {
+            showNotification('Veuillez sélectionner une image valide', 'warning');
+            return;
+        }
+        
+        if (file.size > 2 * 1024 * 1024) {
+            showNotification('L\'image est trop grande (max 2MB)', 'warning');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentProfileImage = e.target.result;
+            
+            // Mettre à jour l'image de profil dans le modal
+            const profileImage = document.getElementById('profileAvatarImage');
+            if (profileImage) {
+                profileImage.src = currentProfileImage;
+            }
+            
+            // Mettre à jour l'image dans la navbar
+            updateProfilePhotoInNavbar();
+            
+            // Sauvegarder dans localStorage
+            if (currentUser) {
+                currentUser.profileImage = currentProfileImage;
+                saveUserData();
+                showNotification('Photo de profil mise à jour', 'success');
+            }
+        };
+        reader.readAsDataURL(file);
     };
     
-    // Ajouter à l'utilisateur courant
-    if (!currentUser.photos) currentUser.photos = [];
-    currentUser.photos.push(photoData);
+    document.body.appendChild(fileInput);
+    fileInput.click();
+    document.body.removeChild(fileInput);
+}
+
+// Fonction pour mettre à jour la photo de profil dans la navbar
+function updateProfilePhotoInNavbar() {
+    const dropdownToggle = document.querySelector('.dropdown-toggle .profile-photo-nav');
+    if (dropdownToggle && currentProfileImage) {
+        dropdownToggle.innerHTML = `<img src="${currentProfileImage}" alt="Photo profil" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">`;
+    }
+}
+
+// Fonction pour sauvegarder les données utilisateur
+function saveUserData() {
+    // Sauvegarder l'utilisateur courant
+    localStorage.setItem('espaceVertUser', JSON.stringify(currentUser));
     
-    // Mettre à jour le localStorage
+    // Mettre à jour dans la liste des utilisateurs
     let users = JSON.parse(localStorage.getItem('espaceVertUsers') || '[]');
     const userIndex = users.findIndex(u => u.email === currentUser.email);
     if (userIndex !== -1) {
-        users[userIndex].photos = currentUser.photos;
+        users[userIndex] = currentUser;
         localStorage.setItem('espaceVertUsers', JSON.stringify(users));
-    }
-    
-    localStorage.setItem('espaceVertUser', JSON.stringify(currentUser));
-    
-    // Réinitialiser le formulaire
-    const uploadForm = document.getElementById('uploadPhotoForm');
-    if (uploadForm) uploadForm.reset();
-    
-    // Recharger les photos et stats
-    loadUserPhotos();
-    updateStats();
-    
-    showNotification('Photo ajoutée avec succès !', 'success');
-}
-
-// Supprimer une photo
-function deletePhoto(index) {
-    if (confirm('Supprimer cette photo ?')) {
-        currentUser.photos.splice(index, 1);
-        
-        // Mettre à jour le localStorage
-        let users = JSON.parse(localStorage.getItem('espaceVertUsers') || '[]');
-        const userIndex = users.findIndex(u => u.email === currentUser.email);
-        if (userIndex !== -1) {
-            users[userIndex].photos = currentUser.photos;
-            localStorage.setItem('espaceVertUsers', JSON.stringify(users));
-        }
-        
-        localStorage.setItem('espaceVertUser', JSON.stringify(currentUser));
-        
-        loadUserPhotos();
-        updateStats();
-        showNotification('Photo supprimée', 'info');
     }
 }
 
@@ -608,6 +526,9 @@ function showMyProfile() {
         showPage('page5');
         return;
     }
+    
+    // Charger la photo de profil si elle existe
+    const profileImage = currentUser.profileImage || '';
     
     // Créer un modal pour le profil
     const modalHTML = `
@@ -624,10 +545,16 @@ function showMyProfile() {
                         <div class="row">
                             <div class="col-md-4 text-center">
                                 <div class="profile-avatar mb-4">
-                                    <i class="fas fa-user-circle fa-6x text-success"></i>
-                                    <button class="btn btn-sm btn-outline-success mt-2">
-                                        <i class="fas fa-camera me-1"></i>Changer
-                                    </button>
+                                    <div id="profileAvatar" style="position: relative; display: inline-block;">
+                                        ${profileImage ? 
+                                            `<img id="profileAvatarImage" src="${profileImage}" alt="Photo profil" 
+                                                  class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">` :
+                                            `<i class="fas fa-user-circle fa-6x text-success"></i>`
+                                        }
+                                        <button class="btn btn-sm btn-outline-success mt-2" onclick="changeProfilePhoto()">
+                                            <i class="fas fa-camera me-1"></i>Changer
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-8">
@@ -701,6 +628,10 @@ function showMyProfile() {
         modalDiv.innerHTML = modalHTML;
         document.body.appendChild(modalDiv);
         modalElement = document.getElementById('profileModal');
+    } else {
+        // Mettre à jour le contenu du modal existant
+        modalElement.outerHTML = modalHTML;
+        modalElement = document.getElementById('profileModal');
     }
     
     // Afficher le modal
@@ -725,17 +656,7 @@ function updateProfile() {
     currentUser.email = newEmail;
     
     // Mettre à jour le localStorage
-    let users = JSON.parse(localStorage.getItem('espaceVertUsers') || '[]');
-    const userIndex = users.findIndex(u => u.email === currentUser.email);
-    
-    if (userIndex !== -1) {
-        users[userIndex].firstName = newFirstName;
-        users[userIndex].lastName = newLastName;
-        users[userIndex].email = newEmail;
-        localStorage.setItem('espaceVertUsers', JSON.stringify(users));
-    }
-    
-    localStorage.setItem('espaceVertUser', JSON.stringify(currentUser));
+    saveUserData();
     
     // Mettre à jour la navigation
     updateNavForUser();
@@ -766,6 +687,254 @@ function showMyPlants() {
         }
         showNotification('Voici vos plantes !', 'info');
     }, 500);
+}
+
+// Charger l'espace membre
+function loadMemberSpace() {
+    if (!currentUser) {
+        showNotification('Veuillez vous connecter pour accéder à cette page', 'warning');
+        showPage('page5');
+        return;
+    }
+    
+    // Mettre à jour le nom
+    const userGreeting = document.getElementById('userGreeting');
+    const userFullName = document.getElementById('userFullName');
+    const userEmail = document.getElementById('userEmail');
+    
+    if (userGreeting) userGreeting.textContent = currentUser.firstName;
+    if (userFullName) userFullName.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+    if (userEmail) userEmail.textContent = currentUser.email;
+    
+    // Mettre à jour la photo de profil dans l'espace membre
+    const profileIcon = document.querySelector('.profile-icon');
+    if (profileIcon && currentUser.profileImage) {
+        profileIcon.innerHTML = `
+            <img src="${currentUser.profileImage}" alt="Photo profil" 
+                 class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+        `;
+    }
+    
+    // Calculer les jours de membre
+    const joinDate = new Date(currentUser.joinDate);
+    const today = new Date();
+    const diffTime = Math.abs(today - joinDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const memberDays = document.getElementById('memberDays');
+    const memberSince = document.getElementById('memberSince');
+    if (memberDays) memberDays.textContent = diffDays;
+    if (memberSince) memberSince.textContent = joinDate.toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    // Mettre à jour les photos partagées
+    const totalPhotos = currentUser.photos?.length || 0;
+    const totalSharedPhotos = document.getElementById('totalSharedPhotos');
+    if (totalSharedPhotos) {
+        totalSharedPhotos.textContent = `${totalPhotos} photo${totalPhotos > 1 ? 's' : ''}`;
+    }
+    
+    // Déterminer le niveau
+    let level = 'Débutant';
+    if (totalPhotos >= 10) level = 'Expert';
+    else if (totalPhotos >= 5) level = 'Intermédiaire';
+    const userLevel = document.getElementById('userLevel');
+    if (userLevel) userLevel.textContent = level;
+    
+    // Charger les photos
+    loadUserPhotos();
+    
+    // Mettre à jour les statistiques
+    updateStats();
+}
+
+// Fonctions pour l'upload d'images des plantes
+function takePhoto() {
+    const photoInput = document.getElementById('photoInput');
+    if (photoInput) {
+        photoInput.setAttribute('capture', 'environment');
+        photoInput.click();
+    }
+}
+
+function selectFromGallery() {
+    const photoInput = document.getElementById('photoInput');
+    if (photoInput) {
+        photoInput.removeAttribute('capture');
+        photoInput.click();
+    }
+}
+
+// Gérer la sélection d'image
+function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Vérifier le type de fichier
+    if (!file.type.match('image.*')) {
+        showNotification('Veuillez sélectionner une image valide', 'warning');
+        return;
+    }
+    
+    // Vérifier la taille (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showNotification('L\'image est trop grande (max 5MB)', 'warning');
+        return;
+    }
+    
+    // Lire et afficher l'aperçu
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        currentImageData = e.target.result;
+        
+        // Afficher l'aperçu
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImage = document.getElementById('imagePreview');
+        
+        if (previewContainer && previewImage) {
+            previewImage.src = currentImageData;
+            previewContainer.classList.remove('d-none');
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// Ajouter une photo
+function uploadUserPhoto() {
+    if (!currentUser) {
+        showNotification('Veuillez vous connecter d\'abord', 'warning');
+        showPage('page5');
+        return;
+    }
+    
+    const plantName = document.getElementById('plantName')?.value;
+    const plantType = document.getElementById('plantType')?.value;
+    const plantDescription = document.getElementById('plantDescription')?.value;
+    
+    if (!plantName) {
+        showNotification('Veuillez donner un nom à votre plante', 'warning');
+        return;
+    }
+    
+    if (!currentImageData) {
+        showNotification('Veuillez sélectionner ou prendre une photo', 'warning');
+        return;
+    }
+    
+    // Créer un identifiant unique pour l'image
+    const imageId = 'plant_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    const photoData = {
+        id: imageId,
+        name: plantName,
+        type: plantType || 'Plante d\'intérieur',
+        imageData: currentImageData,
+        description: plantDescription || '',
+        date: new Date().toISOString()
+    };
+    
+    // Ajouter à l'utilisateur courant
+    if (!currentUser.photos) currentUser.photos = [];
+    currentUser.photos.push(photoData);
+    
+    // Mettre à jour le localStorage
+    saveUserData();
+    
+    // Réinitialiser le formulaire
+    resetUploadForm();
+    
+    // Recharger les photos et stats
+    loadUserPhotos();
+    updateStats();
+    
+    showNotification('Photo ajoutée avec succès !', 'success');
+}
+
+// Réinitialiser le formulaire d'upload
+function resetUploadForm() {
+    const uploadForm = document.getElementById('uploadPhotoForm');
+    if (uploadForm) uploadForm.reset();
+    
+    // Réinitialiser l'aperçu d'image
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('imagePreview');
+    if (previewContainer) previewContainer.classList.add('d-none');
+    if (previewImage) previewImage.src = '#';
+    
+    currentImageData = null;
+}
+
+// Charger les photos de l'utilisateur
+function loadUserPhotos() {
+    const gallery = document.getElementById('userGallery');
+    if (!gallery) return;
+    
+    if (!currentUser.photos || currentUser.photos.length === 0) {
+        gallery.innerHTML = `
+            <div class="col-12 text-center">
+                <div class="p-5 bg-light rounded">
+                    <i class="fas fa-camera fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucune photo ajoutée</p>
+                    <p>Commencez par ajouter une photo de votre plante !</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    gallery.innerHTML = '';
+    currentUser.photos.forEach((photo, index) => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 col-sm-6 mb-4';
+        col.innerHTML = `
+            <div class="user-photo-item position-relative">
+                <img src="${photo.imageData}" alt="${photo.name}" 
+                     class="img-fluid rounded" style="height: 200px; width: 100%; object-fit: cover;">
+                <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-photo" 
+                        onclick="deletePhoto(${index})" title="Supprimer">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="photo-info bg-white p-3 rounded-bottom">
+                    <h6 class="mb-1">${photo.name}</h6>
+                    <p class="text-muted small mb-1">
+                        <i class="fas fa-leaf me-1"></i>${photo.type} • 
+                        <i class="fas fa-calendar me-1"></i>${new Date(photo.date).toLocaleDateString()}
+                    </p>
+                    <p class="small mb-0">${photo.description || 'Pas de description'}</p>
+                </div>
+            </div>
+        `;
+        gallery.appendChild(col);
+    });
+}
+
+// Mettre à jour les statistiques
+function updateStats() {
+    const totalPlants = currentUser.photos?.length || 0;
+    const totalPlantsEl = document.getElementById('totalPlants');
+    const totalPhotosEl = document.getElementById('totalPhotos');
+    const nextWateringEl = document.getElementById('nextWatering');
+    
+    if (totalPlantsEl) totalPlantsEl.textContent = totalPlants;
+    if (totalPhotosEl) totalPhotosEl.textContent = totalPlants;
+    if (nextWateringEl) nextWateringEl.textContent = Math.min(3, totalPlants);
+}
+
+// Supprimer une photo
+function deletePhoto(index) {
+    if (confirm('Supprimer cette photo ?')) {
+        currentUser.photos.splice(index, 1);
+        
+        // Mettre à jour le localStorage
+        saveUserData();
+        
+        loadUserPhotos();
+        updateStats();
+        showNotification('Photo supprimée', 'info');
+    }
 }
 
 // Fonctions utilitaires

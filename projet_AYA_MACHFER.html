@@ -11,7 +11,6 @@
 </head>
 <body>
     <!-- Navigation -->
-        <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#" onclick="showPage('page1')">🌿 ESPRIT VERT</a>
@@ -664,15 +663,29 @@
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="photoUrl" class="form-label">URL de l'image</label>
-                                    <input type="text" class="form-control" id="photoUrl" 
-                                           placeholder="https://exemple.com/ma-photo.jpg" required>
-                                    <small class="text-muted">Vous pouvez aussi utiliser <a href="https://imgbb.com/" target="_blank">imgbb.com</a> pour héberger vos images</small>
+                                    <label for="photoInput" class="form-label">Photo de la plante</label>
+                                    <input type="file" class="form-control" id="photoInput" 
+                                           accept="image/*" capture="environment" required>
+                                    <small class="text-muted">Prenez une photo ou sélectionnez-en une depuis votre appareil</small>
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="takePhoto()">
+                                            <i class="fas fa-camera me-1"></i>Prendre une photo
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectFromGallery()">
+                                            <i class="fas fa-images me-1"></i>Choisir depuis la galerie
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Aperçu de l'image -->
+                                    <div id="imagePreviewContainer" class="mt-3 d-none">
+                                        <p class="small mb-2">Aperçu :</p>
+                                        <img id="imagePreview" src="#" alt="Aperçu" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="plantDescription" class="form-label">Description</label>
                                     <textarea class="form-control" id="plantDescription" 
-                                              rows="2" placeholder="Notes sur cette plante..."></textarea>
+                                              rows="4" placeholder="Notes sur cette plante..."></textarea>
                                 </div>
                             </div>
                             
